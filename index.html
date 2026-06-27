@@ -121,6 +121,10 @@ h2.sec{font-family:var(--disp);font-weight:500;font-size:clamp(26px,4vw,38px);le
   position:relative;overflow:hidden;color:var(--faint);font-family:var(--mono);font-size:11.5px;gap:7px;
 }
 .viewer .hint{position:absolute;bottom:8px;right:10px;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+/* embedded 3D pages: blow the iframe up and centre it so the card's overflow:hidden
+   crops the page's header/margins and leaves just the model. tune --z to zoom. */
+.viewer iframe{--z:100%;position:absolute;border:0;background:var(--bg-3);
+  width:var(--z);height:var(--z);left:calc((100% - var(--z))/2);top:calc((100% - var(--z))/2)}
 .scene{perspective:420px}
 .cube{width:62px;height:62px;position:relative;transform-style:preserve-3d;animation:spin 11s linear infinite}
 .cube i{position:absolute;width:62px;height:62px;border:1px solid var(--aqua);background:color-mix(in srgb,var(--aqua) 10%,transparent)}
@@ -239,7 +243,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
       <article class="card flag" data-cats="iot data backend" data-reveal>
         <div class="viewer">
           <!-- live 3D model embedded from my FishMate-3D-Prototype GitHub Pages -->
-          <iframe src="https://martinez-kateeurisse.github.io/FishMate-3D-Prototype/" title="Fishmate 3D model" loading="lazy" style="width:100%;height:100%;border:0;display:block"></iframe>
+          <iframe src="https://martinez-kateeurisse.github.io/FishMate-3D-Prototype/preview.html" title="Fishmate 3D model" loading="lazy"></iframe>
           <div class="readout" style="pointer-events:none"><span>pH <b id="r-ph">7.2</b></span><span>temp <b id="r-temp">26.4&deg;C</b></span><span>status <b>online</b></span></div>
           <span class="hint" style="pointer-events:none">drag to rotate</span>
         </div>
@@ -264,7 +268,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
       <article class="card" data-cats="iot data" data-reveal>
         <div class="viewer">
           <!-- live 3D model embedded from my BIOFISH_3D GitHub Pages -->
-          <iframe src="https://martinez-kateeurisse.github.io/BIOFISH_3D/" title="Biofish 3D model" loading="lazy" style="width:100%;height:100%;border:0;display:block"></iframe>
+          <iframe src="https://martinez-kateeurisse.github.io/BIOFISH_3D/preview.html" title="Biofish 3D model" loading="lazy"></iframe>
           <span class="hint" style="pointer-events:none">drag to rotate</span>
         </div>
         <h3>Biofish <span class="tag-live">live &middot; 3D</span> <span class="tag-thesis">— thesis</span></h3>
