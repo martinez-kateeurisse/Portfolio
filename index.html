@@ -238,22 +238,16 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
 
       <article class="card flag" data-cats="iot data backend" data-reveal>
         <div class="viewer">
-          <!-- placeholder cube for now — swap in the real Fishmate 3D model.
-               plan: export a .glb and use model-viewer
-                 <model-viewer src="models/fishmate.glb" camera-controls auto-rotate
-                   style="width:100%;height:100%"></model-viewer>
-               (remember to add the model-viewer script to <head>)
-               fallback if that's a pain: just iframe my GitHub 3D page
-                 <iframe src="MY_3D_PAGE_URL" style="width:100%;height:100%;border:0"></iframe> -->
-          <div class="readout"><span>pH <b id="r-ph">7.2</b></span><span>temp <b id="r-temp">26.4&deg;C</b></span><span>status <b>online</b></span></div>
-          <div class="scene"><div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-          <span class="hint">drag to rotate</span>
+          <!-- live 3D model embedded from my FishMate-3D-Prototype GitHub Pages -->
+          <iframe src="https://martinez-kateeurisse.github.io/FishMate-3D-Prototype/" title="Fishmate 3D model" loading="lazy" style="width:100%;height:100%;border:0;display:block"></iframe>
+          <div class="readout" style="pointer-events:none"><span>pH <b id="r-ph">7.2</b></span><span>temp <b id="r-temp">26.4&deg;C</b></span><span>status <b>online</b></span></div>
+          <span class="hint" style="pointer-events:none">drag to rotate</span>
         </div>
         <h3>Fishmate <span class="tag-live">live &middot; 3D</span></h3>
         <p>An embedded live aquarium monitoring system with an online dashboard — real-time sensor readings, alerts, and historical trends.</p>
         <div class="stack"><span>embedded</span><span>sensors</span><span>dashboard</span><span>3D</span></div>
         <div class="links">
-          <a href="https://github.com/martinez-kateeurisse/FishMate-3D-Prototype" target="_blank" rel="noopener" class="muted">code</a>
+          <a href="https://martinez-kateeurisse.github.io/FishMate-3D-Prototype/" target="_blank" rel="noopener">&#8599; live &middot; 3D</a><a href="https://github.com/martinez-kateeurisse/FishMate-3D-Prototype" target="_blank" rel="noopener" class="muted">code</a>
         </div>
       </article>
 
@@ -269,15 +263,15 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
 
       <article class="card" data-cats="iot data" data-reveal>
         <div class="viewer">
-          <!-- Biofish 3D model goes here — same setup as Fishmate above -->
-          <div class="scene"><div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-          <span class="hint">drag to rotate</span>
+          <!-- live 3D model embedded from my BIOFISH_3D GitHub Pages -->
+          <iframe src="https://martinez-kateeurisse.github.io/BIOFISH_3D/" title="Biofish 3D model" loading="lazy" style="width:100%;height:100%;border:0;display:block"></iframe>
+          <span class="hint" style="pointer-events:none">drag to rotate</span>
         </div>
-        <h3>Biofish <span class="tag-thesis">— thesis</span></h3>
+        <h3>Biofish <span class="tag-live">live &middot; 3D</span> <span class="tag-thesis">— thesis</span></h3>
         <!-- flesh this out once I pull the details from our thesis docs -->
         <p>Our capstone thesis project, with an interactive 3D model rendered in the browser. (Summary to be expanded with project documentation.)</p>
         <div class="stack"><span>research</span><span>thesis</span><span>3D</span></div>
-        <div class="links"><a href="https://github.com/martinez-kateeurisse/BIOFISH_3D" target="_blank" rel="noopener" class="muted">code</a></div>
+        <div class="links"><a href="https://martinez-kateeurisse.github.io/BIOFISH_3D/" target="_blank" rel="noopener">&#8599; live &middot; 3D</a><a href="https://github.com/martinez-kateeurisse/BIOFISH_3D" target="_blank" rel="noopener" class="muted">code</a></div>
       </article>
 
       <article class="card" data-cats="backend data" data-reveal>
