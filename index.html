@@ -86,6 +86,7 @@ h2.sec{font-family:var(--disp);font-weight:500;font-size:clamp(26px,4vw,38px);le
 .btn{
   font-family:var(--mono);font-size:13px;display:inline-flex;align-items:center;gap:8px;
   padding:11px 17px;border-radius:9px;border:1px solid var(--line-2);color:var(--text);
+  background:transparent;cursor:pointer;
   transition:border-color .15s,background .15s,transform .12s;
 }
 .btn:hover{border-color:var(--aqua);transform:translateY(-1px)}
@@ -184,6 +185,24 @@ h2.sec{font-family:var(--disp);font-weight:500;font-size:clamp(26px,4vw,38px);le
 footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);font-size:12px;color:var(--faint)}
 .foot-in{max-width:var(--maxw);margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
+/* résumé modal: embeds the PDF on demand so it doesn't weigh down page load */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:24px;
+  background:color-mix(in srgb,var(--bg) 70%,#000);backdrop-filter:blur(6px)}
+.modal.open{display:flex}
+.modal-box{background:var(--bg-2);border:1px solid var(--line-2);border-radius:14px;
+  width:min(880px,100%);height:min(92vh,1040px);display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.45)}
+.modal-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line)}
+.modal-bar .title{font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--aqua)}
+.modal-bar .actions{display:flex;align-items:center;gap:10px}
+.modal-close{font-family:var(--mono);font-size:17px;line-height:1;color:var(--muted);background:transparent;
+  border:1px solid var(--line-2);border-radius:8px;width:34px;height:34px;cursor:pointer;transition:border-color .15s,color .15s}
+.modal-close:hover{color:var(--text);border-color:var(--aqua)}
+.modal-box iframe{flex:1;width:100%;border:0;background:var(--bg-3)}
+.modal-foot{padding:9px 15px;font-family:var(--mono);font-size:11px;color:var(--faint);border-top:1px solid var(--line);text-align:center}
+.modal-foot a{color:var(--aqua)}
+.modal-foot a:hover{text-decoration:underline}
+
 [data-reveal]{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
 [data-reveal].in{opacity:1;transform:none}
 
@@ -220,8 +239,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
     <p class="lede">Computer engineering grad and DOST scholar. I build things that <b>watch, search, teach, and make sense of data</b> — from a live aquarium monitor to an AI study companion — and I test them like they're headed to production.</p>
     <div class="hero-row">
       <a class="btn primary" href="#projects">View projects</a>
-      <!-- TODO: drop in my résumé PDF link once it's hosted -->
-      <a class="btn" href="#" aria-label="Download r&eacute;sum&eacute;">&darr; R&eacute;sum&eacute;</a>
+      <button class="btn" type="button" id="resumeBtn" aria-haspopup="dialog">&darr; R&eacute;sum&eacute;</button>
       <span class="award">&#9733; Top 10 — Annual Prototype Exhibit 2026</span>
     </div>
   </div>
@@ -422,6 +440,21 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
   </div>
 </section>
 
+<!-- résumé viewer: iframe src is set lazily on open (see script) -->
+<div class="modal" id="resumeModal" role="dialog" aria-modal="true" aria-labelledby="resumeTitle" aria-hidden="true">
+  <div class="modal-box">
+    <div class="modal-bar">
+      <span class="title" id="resumeTitle">R&eacute;sum&eacute; &middot; Kate Eurisse Martinez</span>
+      <div class="actions">
+        <a class="btn" href="assets/resume.pdf" download="Kate-Eurisse-Martinez-Resume.pdf">&darr; Download</a>
+        <button class="modal-close" type="button" id="resumeClose" aria-label="Close r&eacute;sum&eacute;">&times;</button>
+      </div>
+    </div>
+    <iframe id="resumeFrame" title="R&eacute;sum&eacute; PDF" src="about:blank" data-src="assets/resume.pdf#view=FitH"></iframe>
+    <div class="modal-foot">Can&rsquo;t see it? <a href="assets/resume.pdf" target="_blank" rel="noopener">Open the PDF in a new tab</a>.</div>
+  </div>
+</div>
+
 <footer>
   <div class="foot-in">
     <span>&copy; 2026 Kate Eurisse Martinez</span>
@@ -476,6 +509,34 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
       if(ph) ph.textContent=(7.0+Math.random()*0.5).toFixed(1);
       if(tp) tp.textContent=(26+Math.random()*1.2).toFixed(1)+'\u00B0C';
     },2600);
+  }
+
+  // r\u00E9sum\u00E9 modal: lazy-load the PDF on first open, restore focus + scroll on close
+  var resumeBtn=document.getElementById('resumeBtn');
+  var modal=document.getElementById('resumeModal');
+  var closeBtn=document.getElementById('resumeClose');
+  var frame=document.getElementById('resumeFrame');
+  var lastFocus=null;
+  function openResume(){
+    lastFocus=document.activeElement;
+    if(frame.getAttribute('src')==='about:blank') frame.setAttribute('src',frame.getAttribute('data-src'));
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    closeBtn.focus();
+  }
+  function closeResume(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+    if(lastFocus&&lastFocus.focus) lastFocus.focus();
+  }
+  if(resumeBtn) resumeBtn.addEventListener('click',openResume);
+  if(closeBtn) closeBtn.addEventListener('click',closeResume);
+  if(modal){
+    modal.addEventListener('click',function(e){ if(e.target===modal) closeResume(); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&modal.classList.contains('open')) closeResume(); });
+    if(location.hash==='#resume') openResume();
   }
 })();
 </script>
