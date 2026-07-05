@@ -170,7 +170,8 @@ h2.sec{font-family:var(--disp);font-weight:500;font-size:clamp(26px,4vw,38px);le
 .cert h3{font-family:var(--disp);font-weight:500;font-size:15.5px;line-height:1.32}
 .cert .meta{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:7px;flex:1}
 .cert .verify{margin-top:13px;font-family:var(--mono);font-size:12.5px;color:var(--aqua);display:inline-flex;align-items:center;gap:5px;align-self:flex-start}
-.cert .verify:hover{text-decoration:underline}
+.cert a.verify:hover{text-decoration:underline}
+.cert .verify.code{color:var(--faint);letter-spacing:.02em}
 
 .list{margin-top:36px;display:flex;flex-direction:column;gap:0}
 .item{padding:24px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:160px 1fr;gap:24px}
@@ -377,21 +378,23 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-family:var(--mono);f
     <h2 class="sec" data-reveal>Credentials</h2>
     <p class="sec-sub" data-reveal>Certificates backing the toolkit &mdash; weighted toward the data and infrastructure side.</p>
     <div class="certs">
-      <!-- add a <a class="verify" href="URL" target="_blank" rel="noopener">&#8599; verify</a> to any card once the Credly/Coursera links are handy -->
       <article class="cert" data-reveal>
         <span class="cat">data</span>
         <h3>Google Data Analytics Professional Certificate</h3>
         <div class="meta">Coursera &middot; 2026</div>
+        <a class="verify" href="https://www.credly.com/badges/cf3464c8-bd4c-4531-a261-8c5c2808d22e/public_url" target="_blank" rel="noopener">&#8599; verify</a>
       </article>
       <article class="cert" data-reveal>
         <span class="cat">databases</span>
         <h3>HCCDA &ndash; GaussDB</h3>
         <div class="meta">Huawei ICT Academy &middot; 2025</div>
+        <span class="verify code">cert no. ICT20251207000022</span>
       </article>
       <article class="cert" data-reveal>
         <span class="cat">networking</span>
         <h3>CCNA: Introduction to Networks</h3>
         <div class="meta">Cisco Networking Academy &middot; 2025</div>
+        <a class="verify" href="https://www.credly.com/badges/71010672-f1be-41df-a8c7-576856051146/public_url" target="_blank" rel="noopener">&#8599; verify</a>
       </article>
     </div>
   </div>
