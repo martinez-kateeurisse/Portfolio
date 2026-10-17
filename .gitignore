@@ -1,0 +1,15 @@
+# Claude Code
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+
+# Original screenshots (the site uses the compressed copies in assets/previews/)
+assets/raw/
