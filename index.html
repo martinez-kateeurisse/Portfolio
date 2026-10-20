@@ -37,6 +37,8 @@
   --spring:cubic-bezier(.34,1.56,.64,1);
   /* toolkit groups — validated categorical set (CVD ΔE ≥ 9, contrast ≥ 3:1) */
   --g1:#0A8F72; --g2:#B7791F; --g3:#3366D6; --g4:#D0574A; --g5:#8A5AD1;
+  /* GitHub activity: one teal ramp, quiet → busy (lightness steps evenly) */
+  --heat0:#CBDCD8; --heat1:#86CFB7; --heat2:#46B592; --heat3:#0F9271; --heat4:#0D5C55;
   --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   --body:"IBM Plex Sans",system-ui,sans-serif;
   --display:"Bricolage Grotesque","IBM Plex Sans",sans-serif;
@@ -55,6 +57,7 @@ html[data-theme="dark"]{
   --shine:rgba(140,255,228,.07); --rim:rgba(255,255,255,.07);
   --depth:rgba(0,0,0,.35); --drop:rgba(0,0,0,.55);
   --g1:#16A27D; --g2:#BF8030; --g3:#5A88E6; --g4:#E2675A; --g5:#9E78E3;
+  --heat0:#203B3E; --heat1:#1B5B4D; --heat2:#1F8E6E; --heat3:#2BC493; --heat4:#8AF3D1;
   --abyss:#040B0C; --ray:rgba(120,240,210,.07);
   --glow-a:rgba(38,224,168,.09); --glow-b:rgba(95,217,190,.06); --grain:.07;
   color-scheme:dark;
@@ -282,6 +285,37 @@ html[data-theme="dark"] .media img{filter:saturate(.8) brightness(.9)}
 .arrow:disabled{opacity:.3;cursor:default}
 .empty{font-family:var(--mono);font-size:13px;color:var(--ink-3);padding:40px 0}
 .empty button{background:none;border:none;color:var(--signal);font:inherit;cursor:pointer;text-decoration:underline;padding:0}
+
+/* GitHub activity: a year of days as bubbles. Busier days are bigger and
+   deeper on the --heat ramp, so size carries the level too, not colour alone.
+   Without JS (or if the fetch fails) the panel is just the profile link. */
+.gh{position:relative;margin-top:clamp(48px,6vw,80px);border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px 24px 16px}
+.gh-title{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+.gh-head{display:flex;align-items:center;gap:8px 18px;flex-wrap:wrap}
+.gh-sum{margin:0;flex:1 1 320px;max-width:none;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.gh-sum b{font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--ink);margin-right:4px}
+.gh-sum .gs{color:var(--ink-3);margin:0 6px}
+.gh-link{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-decoration:none;white-space:nowrap;padding:5px 13px;border:1px solid var(--rule);border-radius:var(--pill);background:var(--panel);box-shadow:inset 0 1px 0 var(--rim);transition:border-color .15s,color .15s}
+.gh-link:hover{border-color:var(--petrol);color:var(--ink)}
+.gh-scroll{overflow-x:auto;margin:14px -8px 0;padding:4px 8px;scrollbar-width:thin;border-radius:var(--r)}
+.gh-scroll svg{display:block;width:100%;min-width:740px;height:auto;overflow:visible}
+.gh-scroll text{font-family:var(--mono);font-size:9px;fill:var(--ink-3)}
+.gh .d{fill:var(--heat0);transform-box:fill-box;transform-origin:center;transition:transform .3s var(--spring)}
+.gh .d[data-l="1"]{fill:var(--heat1)}
+.gh .d[data-l="2"]{fill:var(--heat2)}
+.gh .d[data-l="3"]{fill:var(--heat3)}
+.gh .d[data-l="4"]{fill:var(--heat4)}
+.gh .d.on{stroke:var(--ink);stroke-width:1.5px;transform:scale(1.35)}
+.gh.loading .d{animation:ghwait 1.1s ease-in-out infinite alternate;animation-delay:calc(var(--c) * 20ms)}
+@keyframes ghwait{from{opacity:.35}to{opacity:.9}}
+.gh.ready.in .d{animation:ghin .6s var(--spring) backwards;animation-delay:calc(var(--c) * 10ms)}
+@keyframes ghin{from{transform:scale(0)}}
+.gh-foot{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.gh-key{display:inline-flex;align-items:center;gap:6px}
+.gh-key i{width:var(--s);height:var(--s);border-radius:50%;background:var(--c)}
+.gh-foot .hint{margin:0;font-size:inherit;color:inherit}
+.gh .btip{white-space:nowrap}
+html:not(.js) .gh-scroll,html:not(.js) .gh-foot,.gh.fail .gh-scroll,.gh.fail .gh-foot{display:none}
 
 .xref{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.7fr);gap:16px}
 .xcol{border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px;min-width:0}
@@ -681,6 +715,25 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
         <div class="track"><i id="track"></i></div>
         <button class="arrow" id="prev" type="button" aria-label="Previous project">&larr;</button>
         <button class="arrow" id="next" type="button" aria-label="Next project">&rarr;</button>
+      </div>
+      <div class="gh bub loading rv" id="gh">
+        <h3 class="gh-title">Still shipping &middot; live from GitHub</h3>
+        <div class="gh-head">
+          <p class="gh-sum" id="ghSum">My contribution graph lives on GitHub.</p>
+          <a class="gh-link" href="https://github.com/martinez-kateeurisse" target="_blank" rel="noopener">view on GitHub <span aria-hidden="true">&#8599;</span></a>
+        </div>
+        <div class="gh-scroll" id="ghScroll" tabindex="0" role="region" aria-label="GitHub contributions over the last year. Use the arrow keys to read each day.">
+          <svg id="ghGraph" viewBox="0 0 772 116" role="img" aria-label="Contribution graph, loading"></svg>
+        </div>
+        <div class="gh-foot">
+          <span class="gh-key" aria-hidden="true">less
+            <i style="--s:5px;--c:var(--heat0)"></i><i style="--s:7px;--c:var(--heat1)"></i><i style="--s:9px;--c:var(--heat2)"></i><i style="--s:10px;--c:var(--heat3)"></i><i style="--s:12px;--c:var(--heat4)"></i>
+          more</span>
+          <p class="hint">Bigger, deeper bubble = busier day. Hover or tap one.</p>
+        </div>
+        <ul class="vh" id="ghMonths"></ul>
+        <span class="vh" id="ghLive" aria-live="polite"></span>
+        <div class="btip" id="ghTip" hidden></div>
       </div>
     </div>
   </section>
@@ -1605,6 +1658,131 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
       vbody.innerHTML=rows.map(function(r,j){return line(r,j);}).join("");
     }
     idle();
+  }
+
+  /* ===== GitHub activity =====
+     Daily counts come from a public mirror of the profile graph
+     (github-contributions-api.jogruber.de), fetched when the panel nears the
+     viewport. Until then it shows a pulsing placeholder year; on any failure
+     it falls back to the profile link. */
+  var gh=document.getElementById("gh");
+  if(gh){
+    var GH_USER="martinez-kateeurisse",
+        ghSvg=document.getElementById("ghGraph"),ghScroll=document.getElementById("ghScroll"),
+        ghSum=document.getElementById("ghSum"),ghTip=document.getElementById("ghTip"),
+        ghList=document.getElementById("ghMonths"),ghLive=document.getElementById("ghLive"),
+        GP=14,GX=30,GY=18,GR=[2.6,3.8,4.6,5.3,6],ghDays=[],ghOff=0,ghOn=null,ghK=-1;
+    var utc=function(s){var a=s.split("-");return new Date(Date.UTC(+a[0],a[1]-1,+a[2]));};
+    var fmtDay=function(s,o){return utc(s).toLocaleDateString("en-US",Object.assign({timeZone:"UTC"},o));};
+    var nContrib=function(n){return n===1?"1 contribution":(n?n+" contributions":"No contributions");};
+
+    var ghDraw=function(days){
+      ghDays=days;ghOff=utc(days[0].date).getUTCDay();
+      var weeks=Math.ceil((days.length+ghOff)/7),out=[],lastCol=-9;
+      ["Mon","Wed","Fri"].forEach(function(t,k){out.push('<text x="0" y="'+(GY+(2*k+1)*GP+GP/2+3)+'">'+t+'</text>');});
+      days.forEach(function(d,i){
+        var n=i+ghOff,c=Math.floor(n/7),r=n%7,lv=Math.max(0,Math.min(4,d.level|0));
+        if(d.date.slice(8)==="01"){
+          var mc=r===0?c:c+1;
+          if(mc-lastCol>=3&&mc<weeks){out.push('<text x="'+(GX+mc*GP)+'" y="'+(GY-6)+'">'+fmtDay(d.date,{month:"short"})+'</text>');lastCol=mc;}
+        }
+        out.push('<circle class="d" data-i="'+i+'" data-l="'+lv+'" cx="'+(GX+c*GP+GP/2)+'" cy="'+(GY+r*GP+GP/2)+'" r="'+GR[lv]+'" style="--c:'+c+'"/>');
+      });
+      ghSvg.setAttribute("viewBox","0 0 "+(GX+weeks*GP)+" "+(GY+7*GP));
+      ghSvg.innerHTML=out.join("");
+    };
+
+    // placeholder: the last 365 days, all empty, so the layout never jumps
+    (function(){
+      var t=new Date(),end=Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()),days=[];
+      for(var i=364;i>=0;i--)days.push({date:new Date(end-i*864e5).toISOString().slice(0,10),count:0,level:0});
+      ghDraw(days);
+    })();
+
+    var ghFill=function(data){
+      var days=data.contributions,active=0,best=days[0],months={},order=[];
+      days.forEach(function(d){
+        if(d.count>0)active++;
+        if(d.count>best.count)best=d;
+        var m=d.date.slice(0,7);
+        if(!(m in months)){months[m]=0;order.push(m);}
+        months[m]+=d.count;
+      });
+      var total=(data.total&&data.total.lastYear!=null)?data.total.lastYear:days.reduce(function(s,d){return s+d.count;},0);
+      ghSum.innerHTML='<b>'+total+'</b> '+(total===1?"contribution":"contributions")+' in the last year'
+        +'<span class="gs">&middot;</span>'+active+' active day'+(active===1?"":"s")
+        +(best.count?'<span class="gs">&middot;</span>busiest: '+best.count+' on '+fmtDay(best.date,{month:"short",day:"numeric"}):'');
+      ghSvg.setAttribute("aria-label",total+" contributions in the last year, on "+active+" days. Monthly totals follow.");
+      ghList.innerHTML=order.map(function(m){
+        return "<li>"+fmtDay(m+"-01",{month:"long",year:"numeric"})+": "+nContrib(months[m]).toLowerCase()+"</li>";
+      }).join("");
+      ghDraw(days);
+      gh.classList.remove("loading");gh.classList.add("ready");
+      ghScroll.scrollLeft=ghScroll.scrollWidth; // phones start at the newest weeks
+    };
+    var ghFail=function(){
+      gh.classList.remove("loading");gh.classList.add("fail");
+      ghSum.innerHTML="Couldn&rsquo;t load the graph just now &mdash; it&rsquo;s on my GitHub profile.";
+    };
+    var ghLoad=function(){
+      var ctl=window.AbortController?new AbortController():null,
+          timer=setTimeout(function(){if(ctl)ctl.abort();},9000);
+      fetch("https://github-contributions-api.jogruber.de/v4/"+GH_USER+"?y=last",ctl?{signal:ctl.signal}:{})
+        .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+        .then(function(d){
+          clearTimeout(timer);
+          if(!d||!d.contributions||!d.contributions.length)throw new Error("empty");
+          ghFill(d);
+        })
+        .catch(function(){clearTimeout(timer);ghFail();});
+    };
+    if(!window.fetch)ghFail();
+    else if("IntersectionObserver" in window){
+      var ghIO=new IntersectionObserver(function(en){
+        if(en.some(function(e){return e.isIntersecting;})){ghIO.disconnect();ghLoad();}
+      },{rootMargin:"600px 0px"});
+      ghIO.observe(gh);
+    } else ghLoad();
+
+    // tooltip: reuses the toolkit's pill, kept inside the panel's edges
+    var ghShow=function(el){
+      var d=ghDays[+el.getAttribute("data-i")];
+      if(!d)return;
+      if(ghOn&&ghOn!==el)ghOn.classList.remove("on");
+      ghOn=el;el.classList.add("on");
+      ghTip.textContent=nContrib(d.count)+" · "+fmtDay(d.date,{weekday:"short",month:"short",day:"numeric",year:"numeric"});
+      ghTip.hidden=false;
+      var b=gh.getBoundingClientRect(),c=el.getBoundingClientRect(),half=ghTip.offsetWidth/2,
+          x=Math.max(half+8,Math.min(b.width-half-8,c.left+c.width/2-b.left));
+      ghTip.style.left=x+"px";ghTip.style.top=(c.top-b.top)+"px";
+    };
+    var ghHide=function(){ghTip.hidden=true;if(ghOn){ghOn.classList.remove("on");ghOn=null;}};
+    ghSvg.addEventListener("pointerover",function(e){
+      if(gh.classList.contains("ready")&&e.target.classList&&e.target.classList.contains("d"))ghShow(e.target);
+    });
+    ghSvg.addEventListener("pointerleave",function(e){if(e.pointerType==="mouse")ghHide();});
+    document.addEventListener("pointerdown",function(e){if(!ghSvg.contains(e.target))ghHide();});
+    ghScroll.addEventListener("scroll",function(){if(ghK<0)ghHide();});
+
+    // keyboard: arrows walk the grid (←/→ a week, ↑/↓ a day), Home/End jump
+    ghScroll.addEventListener("keydown",function(e){
+      if(!gh.classList.contains("ready"))return;
+      var last=ghDays.length-1,k=ghK,
+          step={ArrowLeft:-7,ArrowRight:7,ArrowUp:-1,ArrowDown:1}[e.key];
+      if(step!=null)k=k<0?last:Math.max(0,Math.min(last,k+step)); // first press lands on today
+      else if(e.key==="Home")k=0;
+      else if(e.key==="End")k=last;
+      else return;
+      e.preventDefault();
+      ghK=k;
+      var el=ghSvg.querySelector('.d[data-i="'+k+'"]'),
+          s=ghScroll.getBoundingClientRect(),c=el.getBoundingClientRect();
+      if(c.left<s.left+24)ghScroll.scrollLeft-=s.left+24-c.left;
+      else if(c.right>s.right-24)ghScroll.scrollLeft+=c.right-s.right+24;
+      ghShow(el);
+      ghLive.textContent=ghTip.textContent;
+    });
+    ghScroll.addEventListener("blur",function(){ghK=-1;ghHide();});
   }
 
   /* ===== reveal + scrollspy ===== */
