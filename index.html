@@ -540,7 +540,15 @@ html[data-theme="dark"] .medal[data-tier="award"]{--medal-ink:#fff}
 @keyframes tblink{50%{opacity:0}}
 @media (max-width:640px){.medals{gap:10px}.term-meta{display:none}.tl .k{min-width:7ch}.tl.kv{padding-left:7ch;text-indent:-7ch}}
 
-.close h2{font-size:clamp(30px,5.4vw,58px);line-height:1.02;max-width:18ch}
+/* contact intro: the roles she's open to, as pills under the section header */
+.open-to{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px}
+.ot-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.open-to ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.open-to li{font-family:var(--mono);font-size:13px;color:var(--ink);padding:7px 15px;border-radius:var(--pill);
+  border:1px solid color-mix(in srgb,var(--signal) 45%,var(--rule));
+  background:radial-gradient(120% 100% at 30% 0%,var(--shine),transparent 60%),color-mix(in srgb,var(--signal) 9%,var(--panel));
+  box-shadow:inset 0 1px 0 var(--rim),0 8px 18px -14px var(--drop)}
+.contact-lede{margin:18px 0 0;font-size:17px}
 .links-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:38px}
 .links-row a{border:1px solid var(--rule);border-radius:var(--r-lg);text-decoration:none;padding:20px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--mono);font-size:13px;transition:transform .45s var(--spring),border-color .15s}
 .links-row a:hover{border-color:var(--petrol);transform:translateY(-4px)}
@@ -1073,9 +1081,14 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
 
   <section id="contact" class="close">
     <div class="wrap">
-      <div class="head rv"><span class="idx">05</span></div>
-      <h2 class="rv">Looking for data engineering & analytics, QA, software or AI automation work.</h2>
-      <p class="rv" style="margin-top:20px">Full-time roles, or a workflow you&rsquo;d like automated. <span id="contactHow">Send a message here and it lands straight in my inbox.</span></p>
+      <div class="head rv"><span class="idx">05</span><h2>Let&rsquo;s talk</h2><span class="note">Replies within 1&ndash;2 days.</span></div>
+      <div class="open-to rv">
+        <span class="ot-label">Open to</span>
+        <ul>
+          <li>data engineering</li><li>data analytics</li><li>QA</li><li>software</li><li>AI automation</li>
+        </ul>
+      </div>
+      <p class="rv contact-lede">Full-time roles, or a workflow you&rsquo;d like automated. <span id="contactHow">Send a message here and it lands straight in my inbox.</span></p>
       <div class="contact-grid">
       <!-- Messages go through Formspree, which emails them to Kate. Replace
            YOUR_FORM_ID with the form's ID; until then the script hides this panel. -->
