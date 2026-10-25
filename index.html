@@ -58,6 +58,7 @@
   --g1:#0A8F72; --g2:#B7791F; --g3:#3366D6; --g4:#D0574A; --g5:#8A5AD1;
   /* GitHub activity: one teal ramp, quiet → busy (lightness steps evenly) */
   --heat0:#CBDCD8; --heat1:#86CFB7; --heat2:#46B592; --heat3:#0F9271; --heat4:#0D5C55;
+  --bad:#B3402F; /* form errors */
   --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   --body:"IBM Plex Sans",system-ui,sans-serif;
   --display:"Bricolage Grotesque","IBM Plex Sans",sans-serif;
@@ -77,6 +78,7 @@ html[data-theme="dark"]{
   --depth:rgba(0,0,0,.35); --drop:rgba(0,0,0,.55);
   --g1:#16A27D; --g2:#BF8030; --g3:#5A88E6; --g4:#E2675A; --g5:#9E78E3;
   --heat0:#203B3E; --heat1:#1B5B4D; --heat2:#1F8E6E; --heat3:#2BC493; --heat4:#8AF3D1;
+  --bad:#F28B7D;
   --abyss:#040B0C; --ray:rgba(120,240,210,.07);
   --glow-a:rgba(38,224,168,.09); --glow-b:rgba(95,217,190,.06); --grain:.07;
   color-scheme:dark;
@@ -545,6 +547,58 @@ html[data-theme="dark"] .medal[data-tier="award"]{--medal-ink:#fff}
 .links-row a:active{transform:scale(.97);transition-duration:.08s}
 .links-row a small{display:block;font-size:11px;color:var(--ink-3);margin-top:4px;overflow-wrap:anywhere}
 .links-row a .arw{color:var(--ink-3);flex:none}
+
+/* contact: message form beside the link tiles (stacked on phones). If the form
+   isn't configured the script adds .no-form and the tiles go back to one row. */
+.contact-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;margin-top:38px;align-items:start}
+.contact-grid .links-row{margin-top:0;grid-template-columns:1fr}
+.contact-grid.no-form{display:block}
+.contact-grid.no-form .links-row{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+@media (max-width:860px){.contact-grid{grid-template-columns:1fr}.contact-grid .links-row{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}}
+.msg{position:relative;overflow:hidden;border:1px solid var(--rule);border-radius:var(--r-lg);padding:22px 24px 20px}
+.msg form{transition:opacity .3s,transform .3s}
+.msg form.away{opacity:0;transform:translateY(-14px)}
+.msg-title{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+.msg-topic{border:0;margin:0 0 16px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.tchip{position:relative}
+.tchip input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.tchip span{display:inline-block;font-family:var(--mono);font-size:11.5px;background:var(--panel);color:var(--ink-2);border:1px solid var(--rule);border-radius:var(--pill);padding:5px 13px;box-shadow:inset 0 1px 0 var(--rim);transition:transform .35s var(--spring),border-color .15s,color .15s}
+.tchip:hover span{border-color:var(--petrol);color:var(--ink);transform:translateY(-1px)}
+.tchip input:checked+span{background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.35),transparent 55%),var(--petrol);border-color:var(--petrol);color:var(--paper);animation:pop .45s var(--spring)}
+html[data-theme="dark"] .tchip input:checked+span{color:#08211C}
+.tchip input:focus-visible+span{outline:2px solid var(--signal);outline-offset:3px}
+.msg-row{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media (max-width:520px){.msg-row{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;min-width:0}
+.fld label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.fld input,.fld textarea{width:100%;font-family:var(--body);font-size:15px;line-height:1.5;color:var(--ink);background:color-mix(in srgb,var(--paper) 60%,var(--panel));
+  border:1px solid var(--rule);border-radius:var(--r);padding:10px 14px;box-shadow:inset 0 2px 5px -3px var(--depth);transition:border-color .15s,box-shadow .15s}
+.fld textarea{resize:vertical;min-height:128px}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 3px color-mix(in srgb,var(--signal) 24%,transparent)}
+.fld [aria-invalid="true"]{border-color:var(--bad)}
+.fld .err{font-family:var(--mono);font-size:11.5px;color:var(--bad)}
+.fld .err:empty{display:none}
+.trap{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.msg-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.msg-note{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.msg .btn:disabled{opacity:.65;cursor:progress;transform:none}
+.msg-status{margin:14px 0 0;max-width:none;font-family:var(--mono);font-size:12px;line-height:1.6;color:var(--ink-2)}
+.msg-status:empty{display:none}
+.msg-status.bad{color:var(--bad)}
+.msg-status a,.msg-status b{color:var(--ink)}
+.msg-status .copy{font:inherit;font-size:11px;margin-left:4px;padding:2px 10px;border-radius:var(--pill);border:1px solid var(--rule);background:var(--panel);color:var(--ink-2);cursor:pointer}
+.msg-done{text-align:center;padding:40px 8px 30px}
+.msg-done .ok-drop{width:68px;height:68px;margin:0 auto 18px;display:grid;place-items:center;font-size:30px;color:#fff;
+  border-radius:58% 42% 52% 48% / 46% 56% 44% 54%;background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.55),transparent 45%),var(--signal);
+  box-shadow:0 14px 28px -14px var(--drop);animation:pop .7s var(--spring)}
+.msg-done h3{font-size:26px}
+.msg-done h3:focus{outline:none}
+.msg-done p{margin:10px auto 20px;max-width:40ch}
+/* bubbles that rise out of the panel when a message sends */
+.fizz{position:absolute;bottom:36px;left:var(--x);width:var(--s);height:var(--s);border-radius:50%;pointer-events:none;opacity:0;
+  border:1.5px solid color-mix(in srgb,var(--signal) 70%,transparent);background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.75),transparent 45%);
+  animation:fizz var(--d) ease-out var(--delay) forwards}
+@keyframes fizz{0%{opacity:0;transform:translateY(0) scale(.4)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),-300px) scale(1)}}
 footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 /* résumé viewer: the PDF only loads when it's first opened */
@@ -1021,12 +1075,46 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
     <div class="wrap">
       <div class="head rv"><span class="idx">05</span></div>
       <h2 class="rv">Looking for data engineering & analytics, QA, software or AI automation work.</h2>
-      <p class="rv" style="margin-top:20px">Full-time roles, or a workflow you&rsquo;d like automated. Email gets the fastest reply.</p>
+      <p class="rv" style="margin-top:20px">Full-time roles, or a workflow you&rsquo;d like automated. <span id="contactHow">Send a message here and it lands straight in my inbox.</span></p>
+      <div class="contact-grid">
+      <!-- Messages go through Formspree, which emails them to Kate. Replace
+           YOUR_FORM_ID with the form's ID; until then the script hides this panel. -->
+      <div class="msg bub rv">
+        <form id="msgForm" action="https://formspree.io/f/xaeeqryw" method="POST">
+          <h3 class="msg-title">Send a message</h3>
+          <fieldset class="msg-topic">
+            <legend class="vh">What&rsquo;s it about?</legend>
+            <label class="tchip"><input type="radio" name="topic" value="Job opportunity" checked /><span>job opportunity</span></label>
+            <label class="tchip"><input type="radio" name="topic" value="Automation project" /><span>automation project</span></label>
+            <label class="tchip"><input type="radio" name="topic" value="Just saying hi" /><span>just saying hi</span></label>
+          </fieldset>
+          <div class="msg-row">
+            <div class="fld"><label for="mName">Name</label><input id="mName" name="name" type="text" autocomplete="name" maxlength="100" required aria-describedby="mNameErr" /><small class="err" id="mNameErr"></small></div>
+            <div class="fld"><label for="mEmail">Email</label><input id="mEmail" name="email" type="email" autocomplete="email" maxlength="200" required aria-describedby="mEmailErr" /><small class="err" id="mEmailErr"></small></div>
+          </div>
+          <div class="fld"><label for="mBody">Message</label><textarea id="mBody" name="message" rows="5" maxlength="5000" required aria-describedby="mBodyErr"></textarea><small class="err" id="mBodyErr"></small></div>
+          <!-- spam trap: people never see it, bots fill it in -->
+          <input class="trap" id="mTrap" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <input type="hidden" id="mSubject" name="_subject" value="Portfolio message" />
+          <div class="msg-foot">
+            <span class="msg-note">Your email is only used to reply to you.</span>
+            <button class="btn" type="submit" id="mSend"><span class="lbl">Send</span> <span aria-hidden="true">&rarr;</span></button>
+          </div>
+          <p class="msg-status" id="mStatus" role="status" aria-live="polite"></p>
+        </form>
+        <div class="msg-done" id="msgDone" hidden>
+          <div class="ok-drop" aria-hidden="true">&check;</div>
+          <h3 tabindex="-1">Message sent!</h3>
+          <p>Thanks &mdash; I&rsquo;ll reply to <b id="mReplyTo"></b> <span style="white-space:nowrap">within 1&ndash;2 days.</span></p>
+          <button class="btn ghost" type="button" id="mAgain">send another</button>
+        </div>
+      </div>
       <div class="links-row rv">
         <a href="mailto:martinezkateeurisse@gmail.com"><span>email<small>martinezkateeurisse@gmail.com</small></span><span class="arw">&rarr;</span></a>
         <a href="https://github.com/martinez-kateeurisse" target="_blank" rel="noopener"><span>github<small>martinez-kateeurisse</small></span><span class="arw">&#8599;</span></a>
         <a href="https://www.linkedin.com/in/martinezkate" target="_blank" rel="noopener"><span>linkedin<small>in/martinezkate</small></span><span class="arw">&#8599;</span></a>
         <a href="assets/resume.pdf" target="_blank" rel="noopener" data-resume><span>r&eacute;sum&eacute;<small>PDF &middot; view or download</small></span><span class="arw">&darr;</span></a>
+      </div>
       </div>
       <footer><span>&copy; 2026 Kate Eurisse Martinez</span><span>Hand-built. HTML, CSS, no framework.</span></footer>
     </div>
@@ -1876,6 +1964,104 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
   /* links to sections from the previous layout still land somewhere sensible */
   var OLD={"#about":"top","#education":"experience"};
   if(OLD[location.hash]){var tgt=document.getElementById(OLD[location.hash]);if(tgt)tgt.scrollIntoView();}
+
+  /* ===== contact form =====
+     Posts to Formspree, which emails Kate; the sender's "email" field becomes
+     the reply-to. Until a real form ID replaces YOUR_FORM_ID the panel stays
+     hidden. If sending fails the typed message is kept and a prefilled mailto
+     plus the address are offered instead. */
+  var mform=document.getElementById("msgForm");
+  if(mform){
+    var mbox=mform.parentNode,mdone=document.getElementById("msgDone"),msend=document.getElementById("mSend"),
+        mstat=document.getElementById("mStatus"),mName=document.getElementById("mName"),
+        mEmail=document.getElementById("mEmail"),mBody=document.getElementById("mBody"),
+        mSubject=document.getElementById("mSubject"),ADDR="martinezkateeurisse@gmail.com";
+    if(/YOUR_FORM_ID/.test(mform.getAttribute("action"))){
+      mbox.hidden=true;mbox.parentNode.classList.add("no-form");
+      document.getElementById("contactHow").textContent="Email gets the fastest reply.";
+      if(window.console)console.warn("Contact form hidden: add the Formspree form ID to #msgForm's action.");
+    } else {
+      mform.noValidate=true; // our own messages replace the browser's bubbles
+      var fErr=function(el,msg){
+        document.getElementById(el.getAttribute("aria-describedby")).textContent=msg;
+        el.setAttribute("aria-invalid",msg?"true":"false");
+      };
+      var mCheck=function(){
+        var em=mEmail.value.trim(),first=null,rules=[
+          [mName,mName.value.trim()?"":"Please add your name."],
+          [mEmail,!em?"Please add your email so I can reply.":(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)?"":"That email doesn’t look right.")],
+          [mBody,mBody.value.trim().length>=10?"":"A few more words, please (10+ characters)."]];
+        rules.forEach(function(r){fErr(r[0],r[1]);if(r[1]&&!first)first=r[0];});
+        return first;
+      };
+      [mName,mEmail,mBody].forEach(function(el){
+        el.addEventListener("input",function(){if(el.getAttribute("aria-invalid")==="true")fErr(el,"");});
+      });
+      var mStatus=function(html,bad){mstat.className="msg-status"+(bad?" bad":"");mstat.innerHTML=html;};
+      var mBusy=function(on){msend.disabled=on;msend.querySelector(".lbl").textContent=on?"sending…":"Send";};
+      var mFizz=function(){
+        if(reduce)return;
+        for(var i=0;i<14;i++){
+          var b=document.createElement("span");b.className="fizz";
+          b.style.cssText="--x:"+(8+Math.random()*84)+"%;--s:"+(6+Math.random()*14)+"px;--d:"+(.9+Math.random()*.8)+"s;--delay:"+(Math.random()*.35)+"s;--dx:"+(Math.random()*40-20)+"px";
+          mbox.appendChild(b);
+        }
+        setTimeout(function(){[].forEach.call(mbox.querySelectorAll(".fizz"),function(b){b.remove();});},2400);
+      };
+      var mDone=function(){
+        document.getElementById("mReplyTo").textContent=mEmail.value.trim();
+        mFizz();mform.classList.add("away");
+        setTimeout(function(){
+          mform.hidden=true;mdone.hidden=false;mBusy(false);mStatus("");
+          mdone.querySelector("h3").focus();
+        },reduce?0:320);
+      };
+      var mFail=function(){
+        mBusy(false);
+        var href="mailto:"+ADDR+"?subject="+encodeURIComponent(mSubject.value)+"&body="+encodeURIComponent(mBody.value.slice(0,1800));
+        mStatus("Couldn&rsquo;t send just now &mdash; your message is still here. "
+          +'<a href="'+esc(href)+'">Open it in your email app</a> or write to <b>'+ADDR+'</b>'
+          +'<button type="button" class="copy">copy</button>',true);
+      };
+      mstat.addEventListener("click",function(e){
+        var c=e.target.closest(".copy");if(!c)return;
+        var ok=function(){c.textContent="copied ✓";};
+        if(navigator.clipboard)navigator.clipboard.writeText(ADDR).then(ok,function(){c.textContent="select it above";});
+      });
+      mform.addEventListener("submit",function(e){
+        e.preventDefault();
+        if(msend.disabled)return;
+        var bad=mCheck();
+        if(bad){mStatus("");bad.focus();return;}
+        if(document.getElementById("mTrap").value){mDone();return;} // a bot filled the trap: drop it quietly
+        var topic=(mform.querySelector('input[name="topic"]:checked')||{}).value||"Message";
+        mSubject.value="Portfolio · "+topic+" — from "+mName.value.trim();
+        mBusy(true);mStatus("");
+        var ctl=window.AbortController?new AbortController():null,
+            timer=setTimeout(function(){if(ctl)ctl.abort();},15000);
+        fetch(mform.action,{method:"POST",body:new FormData(mform),headers:{Accept:"application/json"},signal:ctl?ctl.signal:undefined})
+          .then(function(r){return r.json().catch(function(){return {};}).then(function(j){return {ok:r.ok,j:j};});})
+          .then(function(res){
+            clearTimeout(timer);
+            if(res.ok){mDone();return;}
+            // Formspree names the field when it rejects one (e.g. a bad email)
+            var hit=null,map={name:mName,email:mEmail,message:mBody};
+            ((res.j&&res.j.errors)||[]).forEach(function(x){
+              var el=map[x.field];
+              if(el&&x.message){fErr(el,x.message.charAt(0).toUpperCase()+x.message.slice(1)+".");hit=hit||el;}
+            });
+            if(hit){mBusy(false);hit.focus();}
+            else mFail();
+          })
+          .catch(function(){clearTimeout(timer);mFail();});
+      });
+      document.getElementById("mAgain").addEventListener("click",function(){
+        mform.reset();mform.classList.remove("away");mform.hidden=false;mdone.hidden=true;
+        [mName,mEmail,mBody].forEach(function(el){fErr(el,"");});
+        mName.focus();
+      });
+    }
+  }
 
   /* ===== theme ===== */
   var root=document.documentElement,btn=document.getElementById("theme");

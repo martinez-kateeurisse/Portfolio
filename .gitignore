@@ -1,3 +1,7 @@
+# Secrets (API keys, tokens): never commit these
+.env
+.env.*
+
 # Claude Code
 CLAUDE.md
 CLAUDE.local.md
