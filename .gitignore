@@ -17,3 +17,6 @@ desktop.ini
 
 # Original screenshots (the site uses the compressed copies in assets/previews/)
 assets/raw/
+
+# Private notes and helper scripts (not part of the site)
+notes/
