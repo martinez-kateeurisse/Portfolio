@@ -136,8 +136,10 @@ p{margin:0 0 16px;max-width:62ch;color:var(--ink-2)}
 
 .bar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 80%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border-bottom:1px solid var(--rule-soft)}
 .bar-in{display:flex;align-items:center;gap:20px;height:56px}
-.sig{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.02em;text-decoration:none;white-space:nowrap}
-.sig .short{display:none}
+.sig{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:-.02em;text-decoration:none;white-space:nowrap}
+/* KM droplet: same design as assets/favicon.svg */
+.mark{flex:none;width:28px;height:28px;display:block;transition:transform .45s var(--spring)}
+.sig:hover .mark{transform:rotate(-8deg) scale(1.08)}
 .bar nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
 .bar nav::-webkit-scrollbar{display:none}
 .bar nav a{font-family:var(--mono);font-size:12px;text-decoration:none;color:var(--ink-3);padding:6px 12px;border-radius:var(--pill);white-space:nowrap;transition:color .15s,background .15s}
@@ -637,7 +639,7 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
 @media (max-width:900px){
   .xref{grid-template-columns:1fr}
   .sig .long{display:none}
-  .sig .short{display:inline}
+  .sig .mark{width:32px;height:32px}
 }
 /* header: below 720px the nav folds into a dropdown under the bar (only with JS) */
 @media (max-width:720px){
@@ -766,7 +768,7 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
 
 <header class="bar">
   <div class="wrap bar-in">
-    <a class="sig" href="#top"><span class="long">Kate Eurisse Martinez</span><span class="short">KEM</span></a>
+    <a class="sig" href="#top" aria-label="Kate Eurisse Martinez, back to top"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="kmFill" cx="34%" cy="26%" r="82%"><stop offset="0" stop-color="#2BC493"/><stop offset=".55" stop-color="#0F9271"/><stop offset="1" stop-color="#0D5C55"/></radialGradient><radialGradient id="kmShine" cx="30%" cy="22%" r="32%"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><path d="M36 2C52 2 62 14 62 30C62 48 50 62 33 62C15 62 2 50 2 33C2 15 18 2 36 2Z" fill="url(#kmFill)"/><path d="M36 2C52 2 62 14 62 30C62 48 50 62 33 62C15 62 2 50 2 33C2 15 18 2 36 2Z" fill="url(#kmShine)"/><text x="32.5" y="41.5" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="700" font-size="25" letter-spacing="-1.2" fill="#fff">KM</text></svg><span class="long">Kate Eurisse Martinez</span></a>
     <nav aria-label="Sections" id="siteNav">
       <a href="#projects">Work</a><a href="#skills">Toolkit</a><a href="#experience">Track record</a><a href="#certifications">Credentials</a><a href="#contact">Contact</a>
     </nav>
