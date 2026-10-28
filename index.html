@@ -478,6 +478,22 @@ html[data-theme="dark"]{
 }
 .shelf-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
 .medal-legend{margin-bottom:0}
+/* tier filter: All / Certifications / Courses / Awards. Needs the script, so
+   readers without JS get the plain colour legend instead. */
+.tier-filter{display:none;flex-wrap:wrap;gap:6px}
+.js .tier-filter{display:flex}
+.js .medal-legend{display:none}
+.tf{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:var(--panel);border:1px solid var(--rule);border-radius:var(--pill);padding:6px 13px;cursor:pointer;
+  box-shadow:inset 0 1px 0 var(--rim);transition:transform .35s var(--spring),border-color .15s,background .15s,color .15s}
+.tf i{width:9px;height:9px;border-radius:50%;background:var(--gc);box-shadow:inset 0 -2px 3px rgba(0,0,0,.2),inset 0 2px 2px rgba(255,255,255,.5)}
+.tf .n{font-size:10.5px;color:var(--ink-3)}
+.tf:hover{border-color:var(--gc);color:var(--ink);transform:translateY(-1px)}
+.tf:active{transform:scale(.93);transition-duration:.08s}
+.tf[aria-pressed="true"]{border-color:var(--gc);color:var(--ink);background:radial-gradient(circle at 30% 20%,var(--shine),transparent 60%),color-mix(in srgb,var(--gc) 16%,var(--panel));animation:pop .45s var(--spring)}
+.tf[aria-pressed="true"] .n{color:var(--ink-2)}
+/* medals that come back into view after a filter change rise in */
+.medals li.enter .medal{animation:medalin .5s var(--spring) backwards;animation-delay:calc(var(--k) * 40ms)}
+@keyframes medalin{from{opacity:0;transform:translateY(14px) scale(.9)}}
 .shelf-ctl{display:flex;gap:8px}
 .shelf-ctl .arrow{width:36px;height:36px;font-size:14px}
 .shelf{position:relative}
@@ -670,11 +686,13 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
   .state,.tk,.medal .cap span{font-size:11px}
   /* the verify.sh console doesn't need to reserve so much empty space */
   .term-body{min-height:150px}
+  /* phones swipe the medal shelf; the arrows would only take a row of their own */
+  .shelf-ctl{display:none}
 }
 /* touch screens: give small links and chips a finger-sized hit area without
    changing how they look with a mouse */
 @media (pointer:coarse){
-  .chip,.tchip span{padding:8px 15px}
+  .chip,.tchip span,.tf{padding:8px 15px}
   .card .links{gap:4px 18px}
   .card .links a{padding:10px 0}
   .tnav button{padding:10px 14px}
@@ -1065,6 +1083,12 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
     <div class="wrap">
       <div class="head rv"><span class="idx">04</span><h2>Credentials</h2><span class="note">Pick a medal to run it through verify.sh.</span></div>
       <div class="shelf-head rv">
+        <div class="tier-filter" role="group" aria-label="Show credentials">
+          <button class="tf" type="button" data-show="all" aria-pressed="true" aria-controls="medals" style="--gc:var(--petrol)">All <span class="n"></span></button>
+          <button class="tf" type="button" data-show="cert" aria-pressed="false" aria-controls="medals" style="--gc:var(--tier-cert)"><i></i>Certifications <span class="n"></span></button>
+          <button class="tf" type="button" data-show="course" aria-pressed="false" aria-controls="medals" style="--gc:var(--tier-course)"><i></i>Courses <span class="n"></span></button>
+          <button class="tf" type="button" data-show="award" aria-pressed="false" aria-controls="medals" style="--gc:var(--tier-award)"><i></i>Awards <span class="n"></span></button>
+        </div>
         <div class="legend medal-legend"><span style="--gc:var(--tier-cert)"><i></i>Certification</span><span style="--gc:var(--tier-course)"><i></i>Course</span><span style="--gc:var(--tier-award)"><i></i>Award</span></div>
         <div class="shelf-ctl" id="shelfCtl" hidden>
           <button class="arrow" id="shelfPrev" type="button" aria-label="Scroll medals left">&larr;</button>
@@ -1765,10 +1789,12 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
       m.setAttribute("aria-label",m.dataset.name+", "+TIER[m.dataset.tier]+", "+m.dataset.date);
       m.addEventListener("click",function(){lookup(i);});
       m.addEventListener("keydown",function(e){
-        var to={ArrowRight:i+1,ArrowDown:i+1,ArrowLeft:i-1,ArrowUp:i-1,Home:0,End:medalEls.length-1}[e.key];
+        // arrow keys walk only the medals the tier filter is showing
+        var vis=medalEls.filter(function(o){return !o.parentNode.hidden;}),j=vis.indexOf(m),
+            to={ArrowRight:j+1,ArrowDown:j+1,ArrowLeft:j-1,ArrowUp:j-1,Home:0,End:vis.length-1}[e.key];
         if(to===undefined)return;
-        e.preventDefault();to=Math.max(0,Math.min(medalEls.length-1,to));
-        medalEls[to].focus();lookup(to);
+        e.preventDefault();to=Math.max(0,Math.min(vis.length-1,to));
+        vis[to].focus();lookup(medalEls.indexOf(vis[to]));
       });
     });
 
@@ -1825,6 +1851,37 @@ footer{border-top:1px solid var(--rule-soft);padding:26px 0 56px;margin-top:56px
     });
     shelf.addEventListener("click",function(e){if(sJustDragged){e.preventDefault();e.stopPropagation();}},true);
     shelfState();
+
+    /* tier filter: All / Certifications / Courses / Awards. Hides the other
+       medals, rewinds the shelf, and has verify.sh summarise the pick unless
+       the medal being looked up is still on the shelf. */
+    var tfBtns=[].slice.call(document.querySelectorAll(".tier-filter .tf")),
+        NOUN={cert:["certification","certifications"],course:["course","courses"],award:["award","awards"]};
+    tfBtns.forEach(function(b){
+      var t=b.dataset.show;
+      b.querySelector(".n").textContent=t==="all"?medalEls.length:medalEls.filter(function(m){return m.dataset.tier===t;}).length;
+      b.addEventListener("click",function(){showTier(t);});
+    });
+    function showTier(t){
+      var shown=[],k=0;
+      tfBtns.forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.show===t));});
+      medalEls.forEach(function(m){
+        var li=m.parentNode,on=t==="all"||m.dataset.tier===t;
+        li.classList.remove("enter");li.hidden=!on;
+        if(on){shown.push(m);li.style.setProperty("--k",k++);void li.offsetWidth;li.classList.add("enter");}
+      });
+      shelf.scrollLeft=0;shelfState();
+      var sel=medalEls.filter(function(m){return m.getAttribute("aria-pressed")==="true";})[0];
+      if(sel&&!sel.parentNode.hidden)return;
+      medalEls.forEach(function(m){m.setAttribute("aria-pressed","false");});
+      if(t==="all"){idle();return;}
+      var nv=shown.filter(function(m){return m.dataset.verify;}).length;
+      vbody.innerHTML=line('<span class="pr">$</span> ./verify.sh --list '+t,0)
+        +line(kv("found",shown.length+" "+NOUN[t][shown.length===1?0:1]),1)
+        +line(kv("verify",nv?nv+" of "+shown.length+" publicly verifiable":"on record — no public verifier"),2)
+        +line('<span class="dim"># pick a medal above to look it up</span>',3)
+        +line('<span class="pr">$</span> <span class="cursor"></span>',4);
+    }
 
     function lookup(i){
       var m=medalEls[i],d=m.dataset,rows=[];
